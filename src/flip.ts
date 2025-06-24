@@ -1,6 +1,11 @@
 import { FlipProcedure } from "./flip-procedure";
 import type { IAnimateOption, IGetRect, IRect } from "./interface";
 
+/**
+ * 记录所有被注册的元素 每个元素只能被同时注册一次
+ */
+const ElSet = new Set<HTMLElement>();
+
 export class Flip extends FlipProcedure implements IGetRect {
   private el: HTMLElement;
   private animateOption: IAnimateOption;
@@ -9,12 +14,16 @@ export class Flip extends FlipProcedure implements IGetRect {
   private lastRect?: IRect;
   private firstAnimateKeyframe?: Keyframe;
   private lastAnimateKeyframe?: Keyframe;
-  // private isRunning: boolean = false;
+  private isRunning: boolean = false;
   constructor(
     el: HTMLElement,
     animateOption: IAnimateOption = 300,
     otherStyleKeys: string[] = []
   ) {
+    if (ElSet.has(el)) {
+      throw new Error('Element has been registered');
+    }
+    ElSet.add(el);
     super();
     this.el = el;
     this.animateOption = animateOption;
@@ -70,19 +79,19 @@ export class Flip extends FlipProcedure implements IGetRect {
     }
   }
   play(): void {
-    // if (this.isRunning) {
-    //   return;
-    // }
+    if (this.isRunning) {
+      return;
+    }
     
-    // this.isRunning = true;
+    this.isRunning = true;
     const animation = this.el.animate([
       this.firstAnimateKeyframe!,
       this.lastAnimateKeyframe!
     ], this.animateOption);
 
-    // animation.addEventListener('finish', () => {
-    //   console.log(this.isRunning);
-    //   this.isRunning = false;      
-    // });
+    animation.addEventListener('finish', () => {
+      this.isRunning = false;
+      ElSet.delete(this.el);
+    });
   }
 }
