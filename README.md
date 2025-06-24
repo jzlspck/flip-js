@@ -3,9 +3,7 @@
 #### 介绍
 基于 FLIP 动画思想，处理元素结构变化的动画，并且同时处理元素样式变化引起的动画
 
-#### 软件架构
-软件架构说明
-
+![demo](./demo.gif)
 
 #### 安装教程
 
@@ -15,17 +13,40 @@
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  引入 flip-js
 
-#### 参与贡献
+```js
+import { Flip } from 'flip-js';
+```
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+2.  创建 Flip 实例
 
+```js
+const flip = new Flip(el[, animateOptionsOrDuration][, otherStyleKeys]);
+```
+
+  - 第一个参数 `el` 是必传的，用于指定要动画的元素
+  - 第二个参数 `animateOptionsOrDuration` 是可选的，用于指定动画的配置
+    - 如果是对象，那么可以指定 `duration`、`easing`、`delay` 等属性
+    - 如果是数字，那么会作为 `duration` 属性的值
+  - 第三个参数 `otherStyleKeys` 是可选的，用于指定除了 `transform` 以外的其他样式属性，这些属性也会参与动画。需要注意的是，传入的 key 对应的样式必须支持过渡/动画。例如背景渐变颜色目前还不支持过渡
+
+3.  自由改变元素结构，和各种 CSS 样式
+
+```js
+// 改变元素结构
+parentEl.appendChild(el);
+
+// 改变元素样式
+el.style.width = '200px';
+el.style.backgroundColor = 'red';
+```
+
+4.  调用实例的 animate 方法，执行动画
+
+```js
+flip.animate();
+```
 
 #### 特技
 
