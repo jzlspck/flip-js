@@ -9,6 +9,7 @@ export class Flip extends FlipProcedure implements IGetRect {
   private lastRect?: IRect;
   private firstAnimateKeyframe?: Keyframe;
   private lastAnimateKeyframe?: Keyframe;
+  // private isRunning: boolean = false;
   constructor(
     el: HTMLElement,
     animateOption: IAnimateOption = 300,
@@ -21,23 +22,24 @@ export class Flip extends FlipProcedure implements IGetRect {
     this.init();
   }
   getRect(): IRect {
-    const rect = this.el.getBoundingClientRect();
-    let top = rect.top;
-    let left = rect.left;
     const style = getComputedStyle(this.el);
     const transform = style.transform;
+    // 先将元素的 transform 置为 none
+    this.el.style.transform = 'none';
+    // 得到变换前的位置值
+    const rect = this.el.getBoundingClientRect();
+    // 恢复元素的 transform 值
+    this.el.style.transform = transform;
+    
+    const top = rect.top;
+    const left = rect.left;
     // 记录其他需要动画的样式
     const styles = {} as { [key: string]: string };
     for (const key of this.otherStyleKeys) {
+      if (key === 'transform') {
+        continue;
+      }
       styles[key] = style[key as any];
-    }
-    if (transform !== 'none') {
-      // transform 的值为 matrix(a, b, c, d, e, f)
-      // 求出矩阵变换前的坐标
-      const { left: originLeft, top: originTop } = this.getOriginRectByMatrix(transform, left, top);
-
-      left = originLeft;
-      top = originTop;
     }
 
     return {
@@ -45,28 +47,6 @@ export class Flip extends FlipProcedure implements IGetRect {
       left,
       transform: transform === 'none' ? '' : transform,
       styles
-    }
-  }
-  getOriginRectByMatrix(transform: string, left: number, top: number): {
-    left: number;
-    top: number;
-  } {
-    console.log(transform, left, top);
-    const matrix = transform.slice(7, -1).split(',').map(Number);
-    const a = matrix[0];
-    const b = matrix[1];
-    const c = matrix[2];
-    const d = matrix[3];
-    const e = matrix[4];
-    const f = matrix[5];
-    console.log(matrix);
-    const dividend = a * d - b * c;
-    const x = (d * (left - e) - c * (top - f)) / dividend;
-    const y = (a * (top - f) - b * (left - e)) / dividend;
-    console.log(x, y);
-    return {
-      left: x,
-      top: y
     }
   }
   init(): void {
@@ -90,9 +70,19 @@ export class Flip extends FlipProcedure implements IGetRect {
     }
   }
   play(): void {
-    this.el.animate([
+    // if (this.isRunning) {
+    //   return;
+    // }
+    
+    // this.isRunning = true;
+    const animation = this.el.animate([
       this.firstAnimateKeyframe!,
       this.lastAnimateKeyframe!
     ], this.animateOption);
+
+    // animation.addEventListener('finish', () => {
+    //   console.log(this.isRunning);
+    //   this.isRunning = false;      
+    // });
   }
 }
