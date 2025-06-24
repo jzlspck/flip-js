@@ -1,11 +1,40 @@
 {
-  "name": "flip-js",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@fan/flip-js",
+  "private": false,
+  "version": "1.0.0",
+  "author": "fan-two",
+  "description": "基于 FLIP 动画思想，处理元素结构变化的动画，并且同时处理元素样式变化引起的动画",
+  "keywords": [
+    "flip",
+    "animation",
+    "css",
+    "javascript"
+  ],
   "type": "module",
+  "main": "lib/flip.umd.js",
+  "module": "lib/flip.es.js",
+  "exports": {
+    ".": {
+      "import": "./lib/flip.es.js",
+      "require": "./lib/flip.umd.js"
+    }
+  },
+  "types": "lib/types/flip.d.ts",
+  "files": [
+    "lib/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": "",
+    "email": ""
+  },
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "preview": "vite preview"
   },
   "devDependencies": {
