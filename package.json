@@ -25,11 +25,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/jzlspck/flip-js.git"
   },
   "bugs": {
-    "url": "",
-    "email": ""
+    "url": "https://github.com/jzlspck/flip-js/issues",
+    "email": "3098735881@qq.com"
   },
   "license": "MIT",
   "scripts": {

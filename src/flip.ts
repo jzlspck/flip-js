@@ -78,11 +78,10 @@ export class Flip extends FlipProcedure implements IGetRect {
       transform: lastTransform
     }
   }
-  play(): void {
+  play(onFinish: () => void): void {
     if (this.isRunning) {
       return;
     }
-    
     this.isRunning = true;
     const animation = this.el.animate([
       this.firstAnimateKeyframe!,
@@ -92,6 +91,7 @@ export class Flip extends FlipProcedure implements IGetRect {
     animation.addEventListener('finish', () => {
       this.isRunning = false;
       ElSet.delete(this.el);
+      onFinish();
     });
   }
 }
