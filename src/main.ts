@@ -3,14 +3,17 @@ import { Flip } from "./flip";
 const btn = document.querySelector('button')!;
 const ul = document.querySelector('ul')!;
 const lis = Array.from(ul.children);
-btn.addEventListener('click', function() {
+btn.addEventListener('click', async function() {
 
   const flip = new Flip((lis[0] as HTMLElement), 1000, ['backgroundColor']);
   ul.appendChild(lis[0]);
-  (lis[0] as HTMLElement).style.transform = 'translateX(100px) scale(1.5) rotate(255deg)';
+  (lis[0] as HTMLElement).style.transform = 'translateX(100px) scale(1.5) rotate(2550deg)';
   (lis[0] as HTMLElement).style.backgroundColor = 'green';
 
-  flip.animate();
+  await flip.animate();
+  // alert('Animation finished');
+  // (lis[0] as HTMLElement).style.transform = 'rotate(9000deg)';
+  // flip.animate();
 
   // const flips: Flip[] = [];
   // lis.forEach(item => {

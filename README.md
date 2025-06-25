@@ -13,7 +13,7 @@
 #### 安装教程
 
 ```
-npm install flip-js
+npm install @fan/flip-js
 ```
 
 #### 使用说明
@@ -21,7 +21,7 @@ npm install flip-js
 1.  引入 flip-js
 
 ```js
-import { Flip } from 'flip-js';
+import { Flip } from '@fan/flip-js';
 ```
 
 2.  创建 Flip 实例
@@ -54,6 +54,8 @@ el.style.backgroundColor = 'red';
 ```js
 flip.animate();
 ```
+
+除此之外，
 
 #### 示例
 

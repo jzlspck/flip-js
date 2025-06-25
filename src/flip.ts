@@ -32,7 +32,8 @@ export class Flip extends FlipProcedure implements IGetRect {
   }
   getRect(): IRect {
     const style = getComputedStyle(this.el);
-    const transform = style.transform;
+    const inlineStyleTransform = this.el.style.transform;
+    const transform = inlineStyleTransform || style.transform;
     // 先将元素的 transform 置为 none
     this.el.style.transform = 'none';
     // 得到变换前的位置值
@@ -83,6 +84,7 @@ export class Flip extends FlipProcedure implements IGetRect {
       return;
     }
     this.isRunning = true;
+    console.log(this.firstAnimateKeyframe, this.lastAnimateKeyframe);
     const animation = this.el.animate([
       this.firstAnimateKeyframe!,
       this.lastAnimateKeyframe!
@@ -92,6 +94,11 @@ export class Flip extends FlipProcedure implements IGetRect {
       this.isRunning = false;
       ElSet.delete(this.el);
       onFinish();
+      // 清空数据，更新 firstRect 用于下一次动画
+      this.firstRect = this.lastRect;
+      this.lastRect = undefined;
+      this.firstAnimateKeyframe = undefined;
+      this.lastAnimateKeyframe = undefined;
     });
   }
 }
