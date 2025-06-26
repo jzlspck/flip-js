@@ -1,12 +1,12 @@
 import { FlipProcedure } from "./flip-procedure";
-import type { IAnimateOption, IGetRect, IRect, IAnimateFunc } from "./interface";
+import type { IAnimateOption, IRect, IAnimateFunc, IAnimationMethods } from "./interface";
 
 /**
  * 记录所有被注册的元素 每个元素只能被同时注册一次
  */
-const ElSet = new Set<HTMLElement>();
+const ElSet = new WeakSet<HTMLElement>();
 
-export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
+export class Flip extends FlipProcedure implements IAnimateFunc, IAnimationMethods {
   private el: HTMLElement;
   private animateOption: IAnimateOption;
   private otherStyleKeys: string[];
@@ -15,6 +15,7 @@ export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
   private firstAnimateKeyframe?: Keyframe;
   private lastAnimateKeyframe?: Keyframe;
   private isRunning: boolean = false;
+  private animation: Animation;
   constructor(
     el: HTMLElement,
     animateOption: IAnimateOption = 300,
@@ -30,7 +31,7 @@ export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
     this.otherStyleKeys = otherStyleKeys;
     this.init();
   }
-  getRect(): IRect {
+  private getRect(): IRect {
     const style = getComputedStyle(this.el);
     const transform = style.transform;
     // 先将元素的 transform 置为 none
@@ -89,6 +90,8 @@ export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
       this.lastAnimateKeyframe!
     ], this.animateOption);
 
+    this.animation = animation;
+
     animation.addEventListener('finish', () => {
       this.isRunning = false;
       ElSet.delete(this.el);
@@ -117,7 +120,7 @@ export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
   /**
    * animate 函数参数归一化
    */
-  animateFuncParamsMerge(params1?: IAnimateOption | (() => void), params2?: IAnimateOption): [IAnimateOption | undefined, (() => void) | undefined] {
+  private animateFuncParamsMerge(params1?: IAnimateOption | (() => void), params2?: IAnimateOption): [IAnimateOption | undefined, (() => void) | undefined] {
     if (typeof params1 === 'function') {
       const callback = params1;
       const animateOption = params2;
@@ -129,6 +132,18 @@ export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
       return [undefined, undefined];
     } else {
       throw new Error('Invalid animate params');
+    }
+  }
+
+  pause(): void {
+    if (this.animation) {
+      this.animation.pause();
+    }
+  }
+
+  resume(): void {
+    if (this.animation) {
+      this.animation.play();
     }
   }
 }

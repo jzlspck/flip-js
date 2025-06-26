@@ -1,4 +1,4 @@
-import { Flip } from "./flip";
+import { Flip } from "./index";
 
 const btn = document.querySelector('button')!;
 const ul = document.querySelector('ul')!;
@@ -18,20 +18,22 @@ btn.addEventListener('click', async function() {
   // }, 5000);
  
 
-  const flips: Flip[] = [];
-  lis.forEach(item => {
-    const flip = new Flip(item as HTMLElement, 1000, ['backgroundColor', 'width']);
-    flips.push(flip);
-  });
+  
+  const flip = new Flip(lis as HTMLElement[], 1000, ['backgroundColor', 'width']);
   lis.sort(() => Math.random() - 0.5).forEach((item) => {
     (item as HTMLElement).style.backgroundColor = getRandomColor();
     (item as HTMLElement).style.width = getRandomNumber(100, 300) + 'px';
     ul.appendChild(item);
   });
 
-  flips.forEach(flip => {
-    flip.animate();
-  });
+  await flip.animate();
+  console.log('Animation finished');
+  lis.forEach(item => {
+    (item as HTMLElement).style.transform = 'rotate(190deg)';
+  })
+  flip.animate(() => {
+    console.log('Animation finished');
+  }, 5000);
 });
 
 function getRandomColor() {

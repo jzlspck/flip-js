@@ -1,10 +1,10 @@
 import { Flip } from "./flip";
-import { IAnimateFunc, IAnimateOption } from "./interface";
+import { IAnimateFunc, IAnimateOption, IAnimationMethods } from "./interface";
 
-class FlipFactory implements IAnimateFunc {
+class FlipFactory implements IAnimateFunc, IAnimationMethods {
   flips?: Flip[] = [];
   constructor(
-    el: HTMLElement | HTMLElement[] | NodeList | HTMLCollection,
+    el: HTMLElement | HTMLElement[] | NodeList | HTMLCollection | Element[],
     animateOption: IAnimateOption,
     otherStyleKeys: string[] = []
   ) {
@@ -25,7 +25,25 @@ class FlipFactory implements IAnimateFunc {
 
   animate(animateOption?: IAnimateOption): Promise<void>;
   animate(callback: () => void, animateOption?: IAnimateOption): void;
-  animate(callback?: unknown, animateOption?: unknown): void | Promise<void> {
-    
+  animate(param1?: IAnimateOption | (() => void), param2?: IAnimateOption): void | Promise<void> {
+    if (typeof param1 === "function") {
+      this.flips.forEach(flip => flip.animate(param1, param2));
+    } else {
+      return new Promise(resolve => {
+        Promise.all(this.flips.map(flip => flip.animate(param1))).then(() => resolve());
+      });
+    }
   }
+
+  pause(): void {
+    this.flips.forEach(flip => flip.pause());
+  }
+
+  resume(): void {
+    this.flips.forEach(flip => flip.resume());
+  }
+}
+
+export {
+  FlipFactory as Flip
 }
