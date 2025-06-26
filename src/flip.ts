@@ -81,6 +81,9 @@ export class Flip extends FlipProcedure implements IAnimateFunc, IAnimationMetho
     }
   }
   play(onFinish: () => void): void {
+    if (!ElSet.has(this.el)) {
+      throw new Error('Flip instance has been destroyed');
+    }
     if (this.isRunning) {
       return;
     }
@@ -94,7 +97,7 @@ export class Flip extends FlipProcedure implements IAnimateFunc, IAnimationMetho
 
     animation.addEventListener('finish', () => {
       this.isRunning = false;
-      ElSet.delete(this.el);
+      // 动画结束的回调
       onFinish();
       // 清空数据，更新 firstRect 用于下一次动画
       this.firstRect = this.lastRect;
@@ -145,5 +148,20 @@ export class Flip extends FlipProcedure implements IAnimateFunc, IAnimationMetho
     if (this.animation) {
       this.animation.play();
     }
+  }
+
+  destroy(): void {
+    if (this.animation) {
+      this.animation.cancel();
+    }
+    ElSet.delete(this.el);
+    this.el =
+    this.animateOption =
+    this.otherStyleKeys =
+    this.firstRect =
+    this.lastRect =
+    this.firstAnimateKeyframe =
+    this.lastAnimateKeyframe =
+    this.animation = undefined;
   }
 }

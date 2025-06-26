@@ -28,12 +28,7 @@ btn.addEventListener('click', async function() {
 
   await flip.animate();
   console.log('Animation finished');
-  lis.forEach(item => {
-    (item as HTMLElement).style.transform = 'rotate(190deg)';
-  })
-  flip.animate(() => {
-    console.log('Animation finished');
-  }, 5000);
+  flip.destroy();
 });
 
 function getRandomColor() {

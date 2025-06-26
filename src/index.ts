@@ -42,6 +42,11 @@ class FlipFactory implements IAnimateFunc, IAnimationMethods {
   resume(): void {
     this.flips.forEach(flip => flip.resume());
   }
+
+  destroy(): void {
+    this.flips.forEach(flip => flip.destroy());
+    this.flips = [];
+  }
 }
 
 export {
