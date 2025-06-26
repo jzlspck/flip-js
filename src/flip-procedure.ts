@@ -19,12 +19,13 @@ export abstract class FlipProcedure {
    * 4. play 执行动画
    */
   abstract play(onFinish: () => void): void;
-  animate(): Promise<void>;
-  animate(callback: () => void): void;
+  // 最终执行动画的函数
+  runAnimate(): Promise<void>;
+  runAnimate(callback: () => void): void;
   /**
-   * 动画结束之后调用,支持两种风格调用方式。Promise 和 callback
+   * 动画结束之后调用回调函数,支持两种风格调用方式。Promise 和 callback
    */
-  animate(callback?: () => void): Promise<void> | void {
+  runAnimate(callback?: () => void): Promise<void> | void {
     const _animate = (fn: () => void) => {
       this.last();
       this.invert();

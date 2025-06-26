@@ -14,3 +14,8 @@ export interface IGetRect {
 }
 
 export type IAnimateOption = KeyframeAnimationOptions | number;
+
+export interface IAnimateFunc {
+  animate(animateOption?: IAnimateOption): Promise<void>;
+  animate(callback: () => void, animateOption?: IAnimateOption): void;
+}

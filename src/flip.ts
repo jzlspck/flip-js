@@ -1,12 +1,12 @@
 import { FlipProcedure } from "./flip-procedure";
-import type { IAnimateOption, IGetRect, IRect } from "./interface";
+import type { IAnimateOption, IGetRect, IRect, IAnimateFunc } from "./interface";
 
 /**
  * 记录所有被注册的元素 每个元素只能被同时注册一次
  */
 const ElSet = new Set<HTMLElement>();
 
-export class Flip extends FlipProcedure implements IGetRect {
+export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
   private el: HTMLElement;
   private animateOption: IAnimateOption;
   private otherStyleKeys: string[];
@@ -32,8 +32,7 @@ export class Flip extends FlipProcedure implements IGetRect {
   }
   getRect(): IRect {
     const style = getComputedStyle(this.el);
-    const inlineStyleTransform = this.el.style.transform;
-    const transform = inlineStyleTransform || style.transform;
+    const transform = style.transform;
     // 先将元素的 transform 置为 none
     this.el.style.transform = 'none';
     // 得到变换前的位置值
@@ -70,6 +69,7 @@ export class Flip extends FlipProcedure implements IGetRect {
     const { left: lastLeft, top: lastTop, transform: lastTransform, styles: lastStyles } = this.lastRect!;
     const diffX = left - lastLeft;
     const diffY = top - lastTop;
+
     this.firstAnimateKeyframe = {
       ...styles,
       transform: `translateX(${diffX}px) translateY(${diffY}px) ${transform}`
@@ -84,7 +84,6 @@ export class Flip extends FlipProcedure implements IGetRect {
       return;
     }
     this.isRunning = true;
-    console.log(this.firstAnimateKeyframe, this.lastAnimateKeyframe);
     const animation = this.el.animate([
       this.firstAnimateKeyframe!,
       this.lastAnimateKeyframe!
@@ -100,5 +99,34 @@ export class Flip extends FlipProcedure implements IGetRect {
       this.firstAnimateKeyframe = undefined;
       this.lastAnimateKeyframe = undefined;
     });
+  }
+
+  /**
+   * animate 方法
+   */
+  animate(animateOption?: IAnimateOption): Promise<void>;
+  animate(callback: () => void, animateOption?: IAnimateOption): void;
+  animate(params1?: IAnimateOption | (() => void), params2?: IAnimateOption): void | Promise<void> {
+    const [animateOption, callback] = this.animateFuncParamsMerge(params1, params2);
+    // 如果有新的配置项，更新配置
+    if (animateOption) {
+      this.animateOption = animateOption;
+    }
+    return super.runAnimate(callback);
+  }
+  /**
+   * animate 函数参数归一化
+   */
+  animateFuncParamsMerge(params1?: IAnimateOption | (() => void), params2?: IAnimateOption): [IAnimateOption | undefined, (() => void) | undefined] {
+    if (typeof params1 === 'function') {
+      const callback = params1;
+      const animateOption = params2;
+      return [animateOption, callback];
+    } else if (!!params1 && (typeof(params1) === 'number' || typeof(params1) === 'object')) {
+      const animateOption = params1;
+      return [animateOption, undefined];
+    } else {
+      throw new Error('Invalid animate params');
+    }
   }
 }
