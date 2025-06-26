@@ -125,6 +125,8 @@ export class Flip extends FlipProcedure implements IGetRect, IAnimateFunc {
     } else if (!!params1 && (typeof(params1) === 'number' || typeof(params1) === 'object')) {
       const animateOption = params1;
       return [animateOption, undefined];
+    } else if (!params1) {
+      return [undefined, undefined];
     } else {
       throw new Error('Invalid animate params');
     }
