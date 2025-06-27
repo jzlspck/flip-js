@@ -1,5 +1,5 @@
 {
-  "name": "@fan/flip-js",
+  "name": "fan-flip-js",
   "private": false,
   "version": "1.0.0",
   "author": "fan-two",
@@ -19,7 +19,7 @@
       "require": "./lib/flip.umd.js"
     }
   },
-  "types": "lib/types/flip.d.ts",
+  "types": "lib/types/index.d.ts",
   "files": [
     "lib/*"
   ],

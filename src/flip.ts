@@ -104,6 +104,7 @@ export class Flip extends FlipProcedure implements IAnimateFunc, IAnimationMetho
       this.lastRect = undefined;
       this.firstAnimateKeyframe = undefined;
       this.lastAnimateKeyframe = undefined;
+      this.animation = undefined;
     });
   }
 

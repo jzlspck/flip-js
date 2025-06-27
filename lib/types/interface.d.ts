@@ -9,7 +9,12 @@ export interface IRect {
         [key: string]: string;
     };
 }
-export interface IGetRect {
-    getRect(): IRect;
-}
 export type IAnimateOption = KeyframeAnimationOptions | number;
+export interface IAnimateFunc {
+    animate(animateOption?: IAnimateOption): Promise<void>;
+    animate(callback: () => void, animateOption?: IAnimateOption): void;
+}
+export interface IAnimationMethods {
+    pause(): void;
+    resume(): void;
+}

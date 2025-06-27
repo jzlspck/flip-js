@@ -1,6 +1,6 @@
 {
   "files": [
-    "src/flip.ts"
+    "src/index.ts"
   ],
   "compilerOptions": {
     "declaration": true,

@@ -17,6 +17,7 @@ export declare abstract class FlipProcedure {
     /**
      * 4. play 执行动画
      */
-    abstract play(): void;
-    animate(): void;
+    abstract play(onFinish: () => void): void;
+    runAnimate(): Promise<void>;
+    runAnimate(callback: () => void): void;
 }
