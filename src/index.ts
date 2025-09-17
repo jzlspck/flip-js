@@ -15,9 +15,10 @@ class FlipFactory implements IAnimateFunc, IAnimationMethods {
       el instanceof HTMLCollection ||
       Array.isArray(el)
     ) {
-      for (let i = 0; i < el.length; i++) {
-        this.flips.push(new Flip((el[i] as HTMLElement), animateOption, otherStyleKeys));
-      }
+      const nodes = new Set(Array.from(el));
+      nodes.forEach(node => {
+        this.flips.push(new Flip(node as HTMLElement, animateOption, otherStyleKeys));
+      });
     } else {
       throw new Error("FlipFactory: el must be HTMLElement or HTMLElement[] or NodeList or HTMLCollection");
     }

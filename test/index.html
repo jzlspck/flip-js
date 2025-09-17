@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FLIP</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/eruda/3.4.1/eruda.js"></script>
+    <script>eruda.init();</script>
+    <style>
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        li {
+            width: 200px;
+            height: 40px;
+            background-color: skyblue;
+            border-radius: 20px;
+            /* 水平居中 */
+            display: flex;
+            justify-content: center;
+            /* 垂直居中 */
+            align-items: center;
+            font-size: 20px;
+            color: #fff;
+        }
+        li:hover {
+            background-color: red;
+        }
+        button {
+          margin: 0 auto;
+          display: block;
+        }
+    </style>
+  </head>
+  <body>
+    <ul>
+        <!-- <li style="transform: translateX(100px) scale(0.8) rotate(45deg);">item1</li> -->
+        <li>item1</li>
+        <li>item2</li>
+        <li>item3</li>
+        <li>item4</li>
+        <li>item5</li>
+        <li>item6</li>
+        <li>item7</li>
+        <li>item8</li>
+    </ul>
+    <button>打乱顺序</button>
+    <script src="../dist/flip.umd.js"></script>
+    <script>
+      const btn = document.querySelector('button');
+      const ul = document.querySelector('ul');
+      const lis = Array.from(ul.children);
+      btn.addEventListener('click', async function() {
+        const flip = new Flip.Flip(lis, 1000, ['backgroundColor', 'width']);
+        lis.sort(() => Math.random() - 0.5).forEach((item) => {
+          item.style.backgroundColor = getRandomColor();
+          item.style.width = getRandomNumber(100, 300) + 'px';
+          ul.appendChild(item);
+        });
+
+        await flip.animate();
+        console.log('Animation finished');
+        flip.destroy();
+      });
+
+      function getRandomColor() {
+        return '#' + Math.random().toString(16).substring(2, 8);
+      }
+
+      function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+    </script>
+  </body>
+</html>
